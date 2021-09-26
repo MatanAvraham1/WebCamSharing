@@ -1,4 +1,4 @@
-import constants as sc
+from constants import *
 import socket
 import threading
 import pickle
@@ -9,10 +9,13 @@ import cv2
 def startServer():
     """
     Starts and configures the server
+
+
+    
     """
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.bind((sc.HOST_IP, sc.HOST_PORT))
+    soc.bind((HOST_IP, HOST_PORT))
     soc.listen()
 
     # Accept clients
@@ -33,14 +36,18 @@ def shareWebCam(soc):
     # Send some initiation things
 
     # Sends the Width and Height of the screen sharing
-    soc.send(f"{sc.WEBCAM_HEIGHT} {sc.WEBCAM_WIDTH}".encode())
+    soc.send(f"{WEBCAM_HEIGHT} {WEBCAM_WIDTH}".encode())
 
-    cam = cv2.VideoCapture(0)  # Gets the camera on the index 0
+    cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Gets the camera on the index 0
     # Starts sends frames
     while True:
         frame = getFrame(cam)
-        sendFrame(soc, frame)
-
+        try:
+            sendFrame(soc, frame)
+        except socket.error as e:
+            cam.release()
+            print(f"{soc.getsockname()} Client has been disconnected!")
+            break
 
 def sendFrame(sock, frame):
     """
@@ -97,9 +104,10 @@ def getFrame(cam):
     return img
 
 
-def main(ip = sc.HOST_IP, port = sc.HOST_PORT):
-    sc.HOST_IP = ip
-    sc.HOST_PORT = port
+def main(ip = HOST_IP, port = HOST_PORT):
+    global HOST_IP, HOST_PORT
+    HOST_IP = ip
+    HOST_PORT = port
 
     startServer()
 

@@ -1,8 +1,7 @@
 from zlib import decompress
 import cv2
-import constants as sc
+from constants import *
 import socket
-import numpy as np
 import pickle
 
 
@@ -23,7 +22,7 @@ def connectToServer():
     Connects to the server
     """
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect((sc.HOST_IP, sc.HOST_PORT))
+    soc.connect((HOST_IP, HOST_PORT))
 
     # Starts watching
     startWatching(soc)
@@ -36,19 +35,23 @@ def startWatching(soc):
 
     # Some initial things
     # Recv the screen size of the sharing
-    sc.WEBCAM_SHARING_WIDTH, sc.WEBCAM_SHARING_HEIGHT = soc.recv(
+    WEBCAM_SHARING_WIDTH, WEBCAM_SHARING_HEIGHT = soc.recv(
         1024).decode().split(' ')
 
     # Convert the screen size from str to int
-    sc.WEBCAM_SHARING_WIDTH = int(sc.WEBCAM_SHARING_WIDTH)
-    sc.WEBCAM_SHARING_HEIGHT = int(sc.WEBCAM_SHARING_HEIGHT)
+    WEBCAM_SHARING_WIDTH = int(WEBCAM_SHARING_WIDTH)
+    WEBCAM_SHARING_HEIGHT = int(WEBCAM_SHARING_HEIGHT)
 
     print(
-        f"Starting watch on {sc.WEBCAM_SHARING_WIDTH}:{sc.WEBCAM_SHARING_HEIGHT}")
+        f"Starting watch on {WEBCAM_SHARING_WIDTH}:{WEBCAM_SHARING_HEIGHT}")
 
     while True:
         frame = recvFrame(soc)
         displayFrame(frame)
+
+        if cv2.getWindowProperty("webCamSharing", cv2.WND_PROP_VISIBLE) <1:
+            print("Disconnecting...")
+            break
 
 
 def recvFrame(soc):
@@ -82,9 +85,10 @@ def displayFrame(frame):
     cv2.waitKey(1)
 
 
-def main(ip = sc.HOST_IP, port = sc.HOST_PORT):
-    sc.HOST_IP = ip
-    sc.HOST_PORT = port
+def main(ip = HOST_IP, port = HOST_PORT):
+    global HOST_IP, HOST_PORT
+    HOST_IP = ip
+    HOST_PORT = port
 
     connectToServer()
 
