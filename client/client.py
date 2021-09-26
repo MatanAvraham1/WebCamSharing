@@ -1,6 +1,7 @@
+from tkinter.constants import NONE
 from zlib import decompress
 import cv2
-from constants import *
+from .constants import *
 import socket
 import pickle
 

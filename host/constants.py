@@ -7,3 +7,6 @@ _cam = cv2.VideoCapture(0)
 
 WEBCAM_WIDTH = int(_cam.get(cv2.CAP_PROP_FRAME_WIDTH))
 WEBCAM_HEIGHT = int(_cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+MAX_CLIENTS = 5555
+CLOSE_AFTER_FIRST_CONNECTION = False
