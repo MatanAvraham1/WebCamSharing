@@ -3,10 +3,5 @@ import cv2
 HOST_IP = "127.0.0.1"
 HOST_PORT = 44444
 
-_cam = cv2.VideoCapture(0)
-
-WEBCAM_WIDTH = int(_cam.get(cv2.CAP_PROP_FRAME_WIDTH))
-WEBCAM_HEIGHT = int(_cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-MAX_CLIENTS = 5555
-CLOSE_AFTER_FIRST_CONNECTION = False
+MAX_CONNECTED_CLIENTS = 5555 # How much clients allowed to connect in parallel
+ONLY_ONE_CONNECTION = False # If True - the host will accept only 1 client and after the client will disconnect the program will exit
