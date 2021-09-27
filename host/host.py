@@ -27,7 +27,7 @@ def startServer():
         clientSocket, clientAddr = soc.accept()
         print(f"{clientAddr} has been connected!")
             
-        if((ONLY_ONE_CONNECTION and connectedClients == 0) or connectedClients < MAX_CONNECTED_CLIENTS):  
+        if (ONLY_ONE_CONNECTION and connectedClients == 0) or connectedClients < MAX_CONNECTED_CLIENTS:  
             connectedClients += 1
             
             t = threading.Thread(target=shareWebCam, args=(
@@ -45,7 +45,7 @@ def startServer():
             if ONLY_ONE_CONNECTION and connectedClients == 1:
                 print(f"{clientAddr} tried to connect but we becuase ONLY_ONE_CONNECTION is true we can accept only 1 client and there is already one connected!")
 
-            elif (connectedClients < MAX_CONNECTED_CLIENTS):
+            elif (connectedClients == MAX_CONNECTED_CLIENTS):
                 print(f"{clientAddr} tried to connect but we are already on the connected clients limit! connected clients:{connectedClients} limit:{MAX_CONNECTED_CLIENTS}")
 
             
@@ -75,7 +75,6 @@ def shareWebCam(soc):
         except socket.error as e: # If the client has been disconnected
             cam.release() # Releases the camera
             print(f"{soc.getsockname()} Client has been disconnected!") 
-                
             connectedClients -= 1
             break
 
