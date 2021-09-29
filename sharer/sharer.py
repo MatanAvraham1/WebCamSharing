@@ -17,7 +17,7 @@ def startServer():
     print("Starting Server...")
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.bind((HOST_IP, HOST_PORT))
+    soc.bind((SHARER_IP, SHARER_PORT))
     soc.listen()
 
     print("Waiting for clients...")
@@ -133,10 +133,10 @@ def getFrame(cam):
     return img
 
 
-def main(ip = HOST_IP, port = HOST_PORT, max_connected_clients = MAX_CONNECTED_CLIENTS, only_one_connection = ONLY_ONE_CONNECTION):
-    global HOST_IP, HOST_PORT, MAX_CONNECTED_CLIENTS, ONLY_ONE_CONNECTION
-    HOST_IP = ip
-    HOST_PORT = port
+def main(ip = SHARER_IP, port = SHARER_PORT, max_connected_clients = MAX_CONNECTED_CLIENTS, only_one_connection = ONLY_ONE_CONNECTION):
+    global SHARER_IP, SHARER_PORT, MAX_CONNECTED_CLIENTS, ONLY_ONE_CONNECTION
+    SHARER_IP = ip
+    SHARER_PORT = port
     MAX_CONNECTED_CLIENTS = max_connected_clients 
     ONLY_ONE_CONNECTION = only_one_connection
 
