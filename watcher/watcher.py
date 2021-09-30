@@ -1,6 +1,6 @@
-from watcher.helper import displayFrame, recvFrame
+from .helper import displayFrame, recvFrame
 import cv2
-from constants import *
+from .constants import *
 import socket
 
 
@@ -26,23 +26,27 @@ def watchWebCam(soc):
     """
 
     # Some initial things
+
+    # Recv the len of the web cam resolution string (we receiving the len of the web cam resultion string only as 1 byte
+    # because the len will not be bigger than 1 byte presentation ability (0 - 128)
+    webCamResolutionLen = int.from_bytes(soc.recv(1), 'big') 
+
     # Recv the screen size of the sharing
-    WEBCAM_SHARING_WIDTH, WEBCAM_SHARING_HEIGHT = soc.recv(
-        1024).decode().split(' ')
+    WEBCAM_SHARING_WIDTH, WEBCAM_SHARING_HEIGHT = soc.recv(webCamResolutionLen).decode().split(' ')
 
     # Convert the screen size from str to int
     WEBCAM_SHARING_WIDTH = int(WEBCAM_SHARING_WIDTH)
     WEBCAM_SHARING_HEIGHT = int(WEBCAM_SHARING_HEIGHT)
 
     print(
-        f"Starting watch on {WEBCAM_SHARING_WIDTH}:{WEBCAM_SHARING_HEIGHT}")
+        f"Start watching on {WEBCAM_SHARING_WIDTH}:{WEBCAM_SHARING_HEIGHT}")
 
     while True:
         frame = recvFrame(soc)
         displayFrame(frame, "webCamSharing")
 
         if cv2.getWindowProperty("webCamSharing", cv2.WND_PROP_VISIBLE) <1:
-            print("Disconnecting...")
+            print("Web camera sharing window has been closed")
             break
 
 

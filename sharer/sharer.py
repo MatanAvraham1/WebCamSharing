@@ -1,5 +1,5 @@
-from sharer.helper import getFrame, sendFrame
-from constants import *
+from .helper import getFrame, sendFrame
+from .constants import *
 import socket
 import threading
 import cv2
@@ -60,9 +60,15 @@ def shareWebCam(soc):
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Gets the camera on the index 0
 
     # Send some initiation things
+
+    # Sends the Width and Height of the web cam 
     
-    # Sends the Width and Height of the screen sharing
-    soc.send(f"{int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))} {int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))}".encode())
+    webCamResolution = f"{int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))} {int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))}"
+    # Sends the len of [webCamResolution] as one byte (This len tells the client 
+    # how much bytes recv from the socket to get [webCamResolution] and not to blend with the other socket data)
+    # We send the len only as 1 byte because the len will not be bigger than 1 byte presentation ability (0 - 128)
+    soc.send(len(webCamResolution).to_bytes(1, 'big')) 
+    soc.send(webCamResolution.encode()) # Sends the web cam resulution
 
     # Starts sends frames
     while True:
